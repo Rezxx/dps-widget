@@ -1,5 +1,6 @@
 <script setup lang="ts">
-
+import keyword_extractor from 'keyword-extractor';
+import { ref, watch } from 'vue'
 const articles = [
   {
     'title': 'Making changes to your rental car and/or RentalCover dates',
@@ -107,12 +108,41 @@ const articles = [
     'link': 'https://www.rentalcover.com/en/help/payments/204'
   },
 ];
+const props = defineProps({
+  results: String,
+})
+
+const filteredArticles = ref([]);
+
+watch(() => props.results, (answer) => {
+  const extraction_result =
+    keyword_extractor.extract(answer, {
+      language: "english",
+      remove_digits: true,
+      return_changed_case: true,
+      remove_duplicates: false
+    });
+
+    console.log(extraction_result)
+  const matchKeywords = (keywords) => {
+    return articles.filter(article => {
+      const sentence = (article['title'] + ' ' + article['description']).toLowerCase().replace(/[,.]/g, ' ').split(' ');
+      const match = keywords.filter(keyword => sentence.includes(keyword))
+      console.log(match)
+      return match.length > 0
+    })
+  };
+
+  filteredArticles.value = matchKeywords(extraction_result)
+});
+
 </script>
 
 <template>
   <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+    <div class="font-mono py-10 text-3xl font-semibold leading-7 tracking-tight text-gray-900" v-if="filteredArticles.length">Have you checked out</div>
     <ul role="list" class="divide-y divide-gray-100">
-      <li v-for="article in articles" v-bind:key="article.title" class="flex justify-between gap-x-6 py-5">
+      <li v-for="article in filteredArticles" v-bind:key="article.title" class="flex justify-between gap-x-6 py-5">
         <div class="flex min-w-0 gap-x-4">
           <!-- <img class="h-12 w-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt=""> -->
           <div class="min-w-0 flex-auto">
