@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import 'survey-core/defaultV2.min.css';
 import { Model } from 'survey-core';
-// import { theme } from "survey-core/themes/layered-dark-panelless";
+import { PlainLightPanelless } from "survey-core/themes/plain-light-panelless";
 import Articles from './Articles.vue';
 import { ref } from 'vue'
 // const SURVEY_ID = 1;
 
 const surveyJson = {
-  completedHtml: "Thank you for the feedback! ",
+  completedHtml: "Thank you for the feedback! <br><br><br><br>",
   elements: [
     {
       type: "rating",
@@ -34,7 +34,7 @@ const alertResults = (sender: any) => {
 
 
 const survey = new Model(surveyJson);
-// survey.applyTheme(theme);
+survey.applyTheme(PlainLightPanelless);
 survey.onComplete.add(alertResults);
 
 // function saveSurveyResults(url: string | URL, json: object) {
@@ -59,8 +59,8 @@ survey.onComplete.add(alertResults);
 </script>
 
 <template>
-  <div class="box-content h-500 w-500 px-96">
+  <div class="box-content h-500 w-500 mx-96 border-4	">
     <SurveyComponent :model="survey" />
-    <Articles :results="results"></Articles>
   </div>
+  <Articles :results="results"></Articles>
 </template>

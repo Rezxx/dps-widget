@@ -123,7 +123,6 @@ watch(() => props.results, (answer) => {
       remove_duplicates: false
     });
 
-    console.log(extraction_result)
   const matchKeywords = (keywords) => {
     return articles.filter(article => {
       const sentence = (article['title'] + ' ' + article['description']).toLowerCase().replace(/[,.]/g, ' ').split(' ');
